@@ -95,7 +95,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			t.ClearState(m.From.UID)
 		case "workplace":
 			t.CheckIn(m.From.UID, m.Message)
-			o.Send(m.Channel.UID, "เช็คอินเข้าที่ "+m.Message+" เรียบร้อย")
+			o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+m.Message+" เรียบร้อยจ้ะ")
 			t.ClearState(m.From.UID)
 		}
 	} else {
@@ -109,7 +109,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 		} else {
 			cmd := strings.ToLower(m.Message)
 			switch {
-			case cmd == "checkin" || cmd == "check-in" || cmd == "มาแล้ว" || cmd == "ทำงาน":
+			case t.isCheckIn(cmd):
 				w, _ := t.FindWorkplace(m.From.UID)
 				if w != nil && len(w.Names) == 1 {
 					// Auto checkin if workplace is one place
@@ -124,14 +124,24 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 							id:    m.From.UID,
 							State: "workplace",
 						})
-						o.Send(m.Channel.UID, "เข้าทำงานที่ไหนเหรอ")
+						o.Send(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ")
 					}
 				}
+			case t.isGreeting(cmd):
+				o.Send(m.Channel.UID, "สวัสดีจ้ะ"+w.Name)
 			default:
 				o.Send(m.Channel.UID, "ไม่เข้าใจเลยล่ะ ลองใหม่นะ"+w.Name)
 			}
 		}
 	}
+}
+
+func (t *Tik) isCheckIn(s string) bool {
+	return s == "checkin" || s == "check-in" || s == "มาแล้ว" || s == "ทำงาน"
+}
+
+func (t *Tik) isGreeting(s string) bool {
+	return s == "สวัสดี" || s == "hi" || s == "hello"
 }
 
 func (t *Tik) tokenize(s string, n int) []string {

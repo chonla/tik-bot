@@ -30,9 +30,11 @@ GOOGLE_APPLICATION_CREDENTIALS=<service-account-file> go run main.go
 
 Tik-bot ถูกตั้งให้พูดคุยผ่าน direct message อย่างเดียว
 
-## TODO: การลงทะเบียนชื่อให้ Tik-bot รู้จัก
+## การลงทะเบียนชื่อให้ Tik-bot รู้จัก
 
 ให้ทัก Tik-bot ไปก่อน ถ้า tik-bot ยังไม่รู้จัก Tik-bot จะถามชื่อกลับมา
+
+**Alias**: สวัสดี, hi, hello
 
 ```
 <me> สวัสดี
@@ -45,7 +47,9 @@ Tik-bot ถูกตั้งให้พูดคุยผ่าน direct mess
 
 ## TODO: การลงชื่อเข้าทำงาน
 
-ให้บอก Tik-bot ว่า checkin หรือ check-in หรือ ทำงาน หรือ มาแล้ว
+ให้บอก Tik-bot ว่า checkin
+
+**Alias**: checkin, check-in, ทำงาน, มาแล้ว
 
 ```
 <me> checkin
