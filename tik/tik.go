@@ -81,6 +81,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 	if state != nil {
 		switch state.State {
 		case "identify":
+			pretty.Println(m.From)
 			mem := &Member{
 				id:        m.From.UID,
 				SlackName: m.From.Name,
@@ -113,8 +114,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 				w, _ := t.FindWorkplace(m.From.UID)
 				if w != nil && len(w.Names) == 1 {
 					// Auto checkin if workplace is one place
-					e = t.CheckIn(m.From.UID, w.Names[0])
-					pretty.Println(e)
+					t.CheckIn(m.From.UID, w.Names[0])
 					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+w.Names[0]+" เรียบร้อยจ้ะ")
 				} else {
 					if w != nil && len(w.Names) > 1 {
@@ -127,6 +127,18 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 						o.Send(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ")
 					}
 				}
+			case t.isCheckInWithLocation(cmd):
+				loc := t.getCheckInLocationFromCommand(cmd)
+				if loc == "" {
+					t.SetState(&ConversationState{
+						id:    m.From.UID,
+						State: "workplace",
+					})
+					o.Send(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ")
+				} else {
+					t.CheckIn(m.From.UID, loc)
+					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+loc+" เรียบร้อยจ้ะ")
+				}
 			case t.isGreeting(cmd):
 				o.Send(m.Channel.UID, "สวัสดีจ้ะ"+w.Name)
 			default:
@@ -134,6 +146,19 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			}
 		}
 	}
+}
+
+func (t *Tik) isCheckInWithLocation(s string) bool {
+	tokens := t.tokenize(s, 2)
+	return tokens[0] == "checkin" || tokens[0] == "check-in" || tokens[0] == "เข้าที่"
+}
+
+func (t *Tik) getCheckInLocationFromCommand(s string) string {
+	tokens := t.tokenize(s, 2)
+	if len(tokens) > 1 {
+		return tokens[1]
+	}
+	return ""
 }
 
 func (t *Tik) isCheckIn(s string) bool {
@@ -145,5 +170,8 @@ func (t *Tik) isGreeting(s string) bool {
 }
 
 func (t *Tik) tokenize(s string, n int) []string {
-	return strings.SplitN(s, " ", n)
+	if strings.Contains(s, " ") {
+		return strings.SplitN(s, " ", n)
+	}
+	return []string{s, ""}
 }
