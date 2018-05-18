@@ -1,0 +1,7 @@
+{
+    "slack-token": "",
+    "ignore-bot-message": true,
+    "debug": true,
+    "gcp-token": "",
+    "firebase-project-id": "oddsy-bot"
+}
