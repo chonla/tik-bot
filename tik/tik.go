@@ -118,7 +118,16 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+w.Names[0]+" เรียบร้อยจ้ะ")
 				} else {
 					if w != nil && len(w.Names) > 1 {
-						o.Send(m.Channel.UID, "ทำงานมากกว่า 1 ที่")
+						workplaces := []*oddsy.SelectionOption{}
+
+						for i, n := 0, len(w.Names); i < n; i++ {
+							workplaces = append(workplaces, &oddsy.SelectionOption{
+								Label: w.Names[i],
+								Value: "checkin " + w.Names[i],
+							})
+						}
+
+						o.SendSelection(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ", "เลือกสถานที่ทำงาน", workplaces)
 					} else {
 						t.SetState(&ConversationState{
 							id:    m.From.UID,
