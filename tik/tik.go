@@ -109,7 +109,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 		} else {
 			cmd := strings.ToLower(m.Message)
 			switch {
-			case cmd == "checkin" || cmd == "check-in" || cmd == "มา" || cmd == "ทำงาน":
+			case cmd == "checkin" || cmd == "check-in" || cmd == "มาแล้ว" || cmd == "ทำงาน":
 				w, _ := t.FindWorkplace(m.From.UID)
 				if w != nil && len(w.Names) == 1 {
 					// Auto checkin if workplace is one place
