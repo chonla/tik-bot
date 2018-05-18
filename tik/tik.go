@@ -115,7 +115,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 					// Auto checkin if workplace is one place
 					e = t.CheckIn(m.From.UID, w.Names[0])
 					pretty.Println(e)
-					o.Send(m.Channel.UID, "เช็คอินเข้าที่ "+w.Names[0]+" เรียบร้อย")
+					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+w.Names[0]+" เรียบร้อยจ้ะ")
 				} else {
 					if w != nil && len(w.Names) > 1 {
 						o.Send(m.Channel.UID, "ทำงานมากกว่า 1 ที่")
