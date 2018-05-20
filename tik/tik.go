@@ -60,6 +60,9 @@ func NewTik(conf *Configuration) *Tik {
 
 	t.ctx = ctx
 	t.client = c
+
+	t.compileCommands()
+
 	return t
 }
 
@@ -109,48 +112,13 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			o.Send(m.Channel.UID, "ชื่ออะไรเหรอ")
 		} else {
 			cmd := strings.ToLower(m.Message)
-			switch {
-			case t.isCheckIn(cmd):
-				w, _ := t.FindWorkplace(m.From.UID)
-				if w != nil && len(w.Names) == 1 {
-					// Auto checkin if workplace is one place
-					t.CheckIn(m.From.UID, w.Names[0])
-					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+w.Names[0]+" เรียบร้อยจ้ะ")
-				} else {
-					if w != nil && len(w.Names) > 1 {
-						workplaces := []*oddsy.SelectionOption{}
 
-						for i, n := 0, len(w.Names); i < n; i++ {
-							workplaces = append(workplaces, &oddsy.SelectionOption{
-								Label: w.Names[i],
-								Value: "checkin " + w.Names[i],
-							})
-						}
+			cmdKey, cmdParams := t.discover(cmd)
 
-						o.SendSelection(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ", "เลือกสถานที่ทำงาน", workplaces)
-					} else {
-						t.SetState(&ConversationState{
-							id:    m.From.UID,
-							State: "workplace",
-						})
-						o.Send(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ")
-					}
-				}
-			case t.isCheckInWithLocation(cmd):
-				loc := t.getCheckInLocationFromCommand(cmd)
-				if loc == "" {
-					t.SetState(&ConversationState{
-						id:    m.From.UID,
-						State: "workplace",
-					})
-					o.Send(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ")
-				} else {
-					t.CheckIn(m.From.UID, loc)
-					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+loc+" เรียบร้อยจ้ะ")
-				}
-			case t.isGreeting(cmd):
+			switch cmdKey {
+			case "GREETING":
 				o.Send(m.Channel.UID, "สวัสดีจ้ะ"+w.Name)
-			case t.isSummaryRequest(cmd):
+			case "SUMMARY":
 				o.Send(m.Channel.UID, t.createSummaryReport(
 					"สรุปรอบเงินเดือน 26 เม.ย. 2561 - 25 พ.ค. 2561",
 					[]*CheckInRecord{
@@ -186,41 +154,41 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 						},
 					},
 				))
+			case "CHECKIN":
+				l := cmdParams[1]
+				if l == "" {
+					w, _ := t.FindWorkplace(m.From.UID)
+					if w != nil && len(w.Names) == 1 {
+						// Auto checkin if workplace is one place
+						t.CheckIn(m.From.UID, w.Names[0])
+						o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+w.Names[0]+" เรียบร้อยจ้ะ")
+					} else {
+						if w != nil && len(w.Names) > 1 {
+							workplaces := []*oddsy.SelectionOption{}
+
+							for i, n := 0, len(w.Names); i < n; i++ {
+								workplaces = append(workplaces, &oddsy.SelectionOption{
+									Label: w.Names[i],
+									Value: "checkin " + w.Names[i],
+								})
+							}
+
+							o.SendSelection(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ", "เลือกสถานที่ทำงาน", workplaces)
+						} else {
+							t.SetState(&ConversationState{
+								id:    m.From.UID,
+								State: "workplace",
+							})
+							o.Send(m.Channel.UID, "วันนี้เข้าทำงานที่ไหนเหรอ")
+						}
+					}
+				} else {
+					t.CheckIn(m.From.UID, l)
+					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+l+" เรียบร้อยจ้ะ")
+				}
 			default:
 				o.Send(m.Channel.UID, "ไม่เข้าใจเลยล่ะ ลองใหม่นะ"+w.Name)
 			}
 		}
 	}
-}
-
-func (t *Tik) isSummaryRequest(s string) bool {
-	return s == "สรุป" || s == "sum"
-}
-
-func (t *Tik) isCheckInWithLocation(s string) bool {
-	tokens := t.tokenize(s, 2)
-	return tokens[0] == "checkin" || tokens[0] == "check-in" || tokens[0] == "เข้าที่"
-}
-
-func (t *Tik) getCheckInLocationFromCommand(s string) string {
-	tokens := t.tokenize(s, 2)
-	if len(tokens) > 1 {
-		return tokens[1]
-	}
-	return ""
-}
-
-func (t *Tik) isCheckIn(s string) bool {
-	return s == "checkin" || s == "check-in" || s == "มาแล้ว" || s == "ทำงาน"
-}
-
-func (t *Tik) isGreeting(s string) bool {
-	return s == "สวัสดี" || s == "hi" || s == "hello"
-}
-
-func (t *Tik) tokenize(s string, n int) []string {
-	if strings.Contains(s, " ") {
-		return strings.SplitN(s, " ", n)
-	}
-	return []string{s, ""}
 }
