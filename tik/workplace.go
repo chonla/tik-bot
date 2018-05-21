@@ -3,6 +3,7 @@ package tik
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -41,7 +42,7 @@ func (t *Tik) FindWorkplace(id string) (w *Workplace, e error) {
 func (t *Tik) CheckIn(id string, name string) (string, error) {
 	multiplier := 1.0
 	if mul, text, ok := t.detectMultiplier(name); ok {
-		name = text
+		name = strings.TrimSpace(text)
 		multiplier = mul
 		fmt.Println("name is changed to:" + name)
 		fmt.Printf("multiplier is changed to: %0.1f\n", multiplier)
