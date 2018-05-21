@@ -12,7 +12,7 @@ var cmdList = map[string][]string{
 	"SUMMARY":  []string{"สรุป", "sum", "summary"},
 	"CHECKIN":  []string{"checkin", "check-in", "เข้าทำงาน", "ลงชื่อ"},
 	"GREETING": []string{"สวัสดี", "hello", "hi"},
-	"HELP":     []string{"?"},
+	"HELP":     []string{"?", "งง", "help"},
 }
 
 type cmdKV struct {
