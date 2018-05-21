@@ -116,6 +116,8 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			cmdKey, cmdParams := t.discover(cmd)
 
 			switch cmdKey {
+			case "HELP":
+				o.Send(m.Channel.UID, t.getHelp())
 			case "GREETING":
 				o.Send(m.Channel.UID, "สวัสดีจ้ะ"+w.Name)
 			case "SUMMARY":
