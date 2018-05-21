@@ -29,7 +29,7 @@ var englishCmdRegex *regexp.Regexp
 
 func (t *Tik) isEnglishText(s string) bool {
 	if englishCmdRegex == nil {
-		englishCmdRegex = regexp.MustCompile("^[a-z\\-0-9_]+$")
+		englishCmdRegex = regexp.MustCompile("^[a-z\\-0-9_\\?]+$")
 	}
 	return englishCmdRegex.MatchString(s)
 }
