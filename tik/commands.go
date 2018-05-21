@@ -10,7 +10,7 @@ import (
 // Command list
 var cmdList = map[string][]string{
 	"SUMMARY":  []string{"สรุป", "sum", "summary"},
-	"CHECKIN":  []string{"checkin", "check-in", "เข้าทำงาน", "ลงชื่อ"},
+	"CHECKIN":  []string{"checkin", "check-in", "เข้าทำงาน", "ลงชื่อ", "เข้าที่"},
 	"GREETING": []string{"สวัสดี", "hello", "hi"},
 	"HELP":     []string{"?", "งง", "help"},
 }

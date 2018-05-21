@@ -17,7 +17,7 @@ func (t *Tik) createSummaryReport(r []*CheckInRecord, startDate, endDate string)
 	end, _ := time.ParseInLocation("20060102", endDate, loc)
 	to := end.Format("2 Jan 2006")
 
-	sum := map[string]float32{}
+	sum := map[string]float64{}
 	for i, n := 0, len(r); i < n; i++ {
 		sum[r[i].Location] += r[i].Multiplier
 	}

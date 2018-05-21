@@ -98,8 +98,8 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			}
 			t.ClearState(m.From.UID)
 		case "workplace":
-			t.CheckIn(m.From.UID, m.Message)
-			o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+m.Message+" เรียบร้อยจ้ะ")
+			wp, _ := t.CheckIn(m.From.UID, m.Message)
+			o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+wp+" เรียบร้อยจ้ะ")
 			t.ClearState(m.From.UID)
 		}
 	} else {
@@ -129,8 +129,8 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 					w, _ := t.FindWorkplace(m.From.UID)
 					if w != nil && len(w.Names) == 1 {
 						// Auto checkin if workplace is one place
-						t.CheckIn(m.From.UID, w.Names[0])
-						o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+w.Names[0]+" เรียบร้อยจ้ะ")
+						wp, _ := t.CheckIn(m.From.UID, w.Names[0])
+						o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+wp+" เรียบร้อยจ้ะ")
 					} else {
 						if w != nil && len(w.Names) > 1 {
 							workplaces := []*oddsy.SelectionOption{}
@@ -152,8 +152,8 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 						}
 					}
 				} else {
-					t.CheckIn(m.From.UID, l)
-					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+l+" เรียบร้อยจ้ะ")
+					wp, _ := t.CheckIn(m.From.UID, l)
+					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+wp+" เรียบร้อยจ้ะ")
 				}
 			default:
 				o.Send(m.Channel.UID, "ไม่เข้าใจเลยล่ะ ลองใหม่นะ"+w.Name)
