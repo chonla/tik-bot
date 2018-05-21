@@ -119,11 +119,8 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			case "GREETING":
 				o.Send(m.Channel.UID, "สวัสดีจ้ะ"+w.Name)
 			case "SUMMARY":
-				rep, _ := t.getSummaryReport(m.From.UID)
-				o.Send(m.Channel.UID, t.createSummaryReport(
-					"สรุปรอบเงินเดือน 26 เม.ย. 2561 - 25 พ.ค. 2561",
-					rep,
-				))
+				rep, start, end, _ := t.getSummaryReport(m.From.UID)
+				o.Send(m.Channel.UID, t.createSummaryReport(rep, start, end))
 			case "CHECKIN":
 				l := cmdParams[1]
 				if l == "" {

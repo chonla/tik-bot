@@ -10,7 +10,13 @@ import (
 
 type monthlyCheckInRecord map[string][]*CheckInRecord
 
-func (t *Tik) createSummaryReport(title string, r []*CheckInRecord) string {
+func (t *Tik) createSummaryReport(r []*CheckInRecord, startDate, endDate string) string {
+	loc, _ := time.LoadLocation("Asia/Bangkok")
+	start, _ := time.ParseInLocation("20060102", startDate, loc)
+	from := start.Format("2 Jan 2006")
+	end, _ := time.ParseInLocation("20060102", endDate, loc)
+	to := end.Format("2 Jan 2006")
+
 	sum := map[string]float32{}
 	for i, n := 0, len(r); i < n; i++ {
 		sum[r[i].Location] += r[i].Multiplier
@@ -21,10 +27,10 @@ func (t *Tik) createSummaryReport(title string, r []*CheckInRecord) string {
 		rows = append(rows, fmt.Sprintf("*%s* : %0.1f วัน", k, v))
 	}
 
-	return title + "\n" + strings.Join(rows, "\n")
+	return fmt.Sprintf("สรุปรอบเงินเดือน %s - %s", from, to) + "\n" + strings.Join(rows, "\n")
 }
 
-func (t *Tik) getSummaryReport(uid string) (cir []*CheckInRecord, e error) {
+func (t *Tik) getSummaryReport(uid string) (cir []*CheckInRecord, start string, end string, e error) {
 	loc, _ := time.LoadLocation("Asia/Bangkok")
 	ts := time.Now().In(loc)
 	thisMonth := ts.Format("200601")
@@ -32,6 +38,9 @@ func (t *Tik) getSummaryReport(uid string) (cir []*CheckInRecord, e error) {
 	firstOfThisMonth, _ := time.Parse("20060102", thisMonth+"01")
 	lastMonthTS := firstOfThisMonth.Add(-24 * time.Hour)
 	lastMonth := lastMonthTS.Format("200601")
+
+	start = fmt.Sprintf("%s%02d", lastMonth, 26)
+	end = fmt.Sprintf("%s%02d", thisMonth, 25)
 
 	lastCir, e := t.getMonthlyReport(uid, lastMonth, 26, 31)
 	if e == nil {
