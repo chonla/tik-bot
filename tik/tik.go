@@ -119,40 +119,10 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			case "GREETING":
 				o.Send(m.Channel.UID, "สวัสดีจ้ะ"+w.Name)
 			case "SUMMARY":
+				rep, _ := t.getSummaryReport(m.From.UID)
 				o.Send(m.Channel.UID, t.createSummaryReport(
 					"สรุปรอบเงินเดือน 26 เม.ย. 2561 - 25 พ.ค. 2561",
-					[]*CheckInRecord{
-						&CheckInRecord{
-							Stamp:                "20180502",
-							Multiplier:           1,
-							Location:             "sec",
-							TransactionTimestamp: "2018-05-02T10:10:20+0700",
-						},
-						&CheckInRecord{
-							Stamp:                "20180503",
-							Multiplier:           1,
-							Location:             "sec",
-							TransactionTimestamp: "2018-05-03T10:10:20+0700",
-						},
-						&CheckInRecord{
-							Stamp:                "20180504",
-							Multiplier:           1,
-							Location:             "sec",
-							TransactionTimestamp: "2018-05-02T10:10:20+0700",
-						},
-						&CheckInRecord{
-							Stamp:                "20180505",
-							Multiplier:           0.5,
-							Location:             "ktb",
-							TransactionTimestamp: "2018-05-02T10:10:20+0700",
-						},
-						&CheckInRecord{
-							Stamp:                "20180506",
-							Multiplier:           1,
-							Location:             "ktb",
-							TransactionTimestamp: "2018-05-02T10:10:20+0700",
-						},
-					},
+					rep,
 				))
 			case "CHECKIN":
 				l := cmdParams[1]

@@ -71,10 +71,10 @@ func (t *Tik) CheckIn(id string, name string) error {
 	rec := map[string]*CheckInRecord{}
 	rec[k] = row
 
-	recset := map[string]map[string]*CheckInRecord{}
-	recset[month] = rec
+	// recset := map[string]map[string]*CheckInRecord{}
+	// recset[month] = rec
 
-	_, e = t.client.Collection("checkins").Doc(id).Set(t.ctx, recset, firestore.MergeAll)
+	_, e = t.client.Collection("checkins").Doc(id).Collection("monthly").Doc(month).Set(t.ctx, rec, firestore.MergeAll)
 
 	return e
 }
