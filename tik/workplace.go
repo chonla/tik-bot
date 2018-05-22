@@ -1,14 +1,12 @@
 package tik
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 	"time"
 
 	"cloud.google.com/go/firestore"
 	"github.com/chonla/slices"
-	"github.com/kr/pretty"
 )
 
 // Workplace carries state of conversation
@@ -44,8 +42,6 @@ func (t *Tik) CheckIn(id string, name string) (string, error) {
 	if mul, text, ok := t.detectMultiplier(name); ok {
 		name = strings.TrimSpace(text)
 		multiplier = mul
-		fmt.Println("name is changed to:" + name)
-		fmt.Printf("multiplier is changed to: %0.1f\n", multiplier)
 	}
 
 	w, e := t.FindWorkplace(id)
@@ -101,11 +97,8 @@ func (t *Tik) detectMultiplier(s string) (mul float64, text string, ok bool) {
 
 	for k, v := range supportedMultiplier {
 		for i, n := 0, len(v); i < n; i++ {
-			pretty.Println(v[i])
 			re := regexp.MustCompile(v[i])
 			result := re.FindStringSubmatch(s)
-			pretty.Println(s)
-			pretty.Println(result)
 			if len(result) > 1 {
 				text = result[1]
 				mul = multiplier[k]
