@@ -118,7 +118,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 
 			switch cmdKey {
 			case "WIZARD":
-				o.SendSelection(m.Channel.UID, fmt.Sprintf("มีอะไรให้%sช่วยเหรอจ๊ะ", o.Name), "เลือกคำสั่ง", t.createWizardSelection())
+				o.SendSelection(m.Channel.UID, fmt.Sprintf("มีอะไรให้%sช่วยเหรอจ๊ะ", o.Name), fmt.Sprintf("ให้%sทำอะไรดีนะ", o.Name), t.createWizardSelection())
 			case "HELP":
 				o.Send(m.Channel.UID, t.getHelp())
 			case "GREETING":
@@ -133,7 +133,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 					if w != nil && len(w.Names) == 1 {
 						// Auto checkin if workplace is one place
 						wp, _ := t.CheckIn(m.From.UID, w.Names[0])
-						o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+wp+" เรียบร้อยจ้ะ")
+						o.Send(m.Channel.UID, fmt.Sprintf("ลงชื่อเข้าทำงานที่ %s ให้แล้วนะ สู้ ๆ นะจ๊ะ %sเป็นกำลังใจให้อยู่นะ", wp, o.Name))
 					} else {
 						if w != nil && len(w.Names) > 1 {
 							workplaces := []*oddsy.SelectionOption{}
@@ -156,7 +156,7 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 					}
 				} else {
 					wp, _ := t.CheckIn(m.From.UID, l)
-					o.Send(m.Channel.UID, "ลงชื่อเข้าทำงานที่ "+wp+" เรียบร้อยจ้ะ")
+					o.Send(m.Channel.UID, fmt.Sprintf("ลงชื่อเข้าทำงานที่ %s ให้แล้วนะ สู้ ๆ นะจ๊ะ %sเป็นกำลังใจให้อยู่นะ", wp, o.Name))
 				}
 			default:
 				o.Send(m.Channel.UID, "ไม่เข้าใจเลยล่ะ ลองใหม่นะ"+w.Name)
