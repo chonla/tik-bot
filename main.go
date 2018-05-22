@@ -13,9 +13,7 @@ import (
 var tk *tik.Tik
 
 type configuration struct {
-	SlackToken        string `json:"slack-token"`
-	Debug             bool   `json:"debug"`
-	IgnoreBotMessage  bool   `json:"ignore-bot-message"`
+	oddsy.Configuration
 	GcpToken          string `json:"gcp-token"`
 	FirebaseProjectID string `json:"firebase-project-id"`
 }
@@ -29,6 +27,7 @@ func main() {
 		SlackToken:       conf.SlackToken,
 		Debug:            conf.Debug,
 		IgnoreBotMessage: conf.IgnoreBotMessage,
+		BotInfo:          conf.BotInfo,
 	})
 
 	b.DirectMessageReceived(directMessageHandler)

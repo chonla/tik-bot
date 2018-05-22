@@ -3,5 +3,8 @@
     "ignore-bot-message": true,
     "debug": true,
     "gcp-token": "",
-    "firebase-project-id": "oddsy-bot"
+    "firebase-project-id": "oddsy-bot",
+    "bot-info": {
+        "name": "เฌอปราง"
+    }
 }

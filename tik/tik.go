@@ -1,6 +1,7 @@
 package tik
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -116,6 +117,8 @@ func (t *Tik) Dispatch(o *oddsy.Oddsy, m *oddsy.Message) {
 			cmdKey, cmdParams := t.discover(cmd)
 
 			switch cmdKey {
+			case "WIZARD":
+				o.SendSelection(m.Channel.UID, fmt.Sprintf("มีอะไรให้%sช่วยเหรอจ๊ะ", o.Name), "เลือกคำสั่ง", t.createWizardSelection())
 			case "HELP":
 				o.Send(m.Channel.UID, t.getHelp())
 			case "GREETING":
